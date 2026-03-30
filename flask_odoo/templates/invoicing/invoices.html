@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Invoices' if inv_type == 'out_invoice' else 'Bills' }}{% endblock %}
+{% block content %}
+<div class="o-control-panel">
+    <h2><i class="bi bi-receipt"></i> {{ 'Customer Invoices' if inv_type == 'out_invoice' else 'Vendor Bills' }}</h2>
+    <div class="o-cp-actions">
+        <div class="btn-group btn-group-sm">
+            <a href="{{ url_for('invoicing.invoices', type='out_invoice') }}" class="btn {{ 'btn-odoo' if inv_type == 'out_invoice' else 'btn-odoo-outline' }}">Invoices</a>
+            <a href="{{ url_for('invoicing.invoices', type='in_invoice') }}" class="btn {{ 'btn-odoo' if inv_type == 'in_invoice' else 'btn-odoo-outline' }}">Bills</a>
+        </div>
+        <div class="btn-group btn-group-sm">
+            <a href="{{ url_for('invoicing.invoices', type=inv_type) }}" class="btn {{ 'btn-odoo' if not current_state else 'btn-odoo-outline' }}">All</a>
+            <a href="{{ url_for('invoicing.invoices', type=inv_type, state='draft') }}" class="btn {{ 'btn-odoo' if current_state == 'draft' else 'btn-odoo-outline' }}">Draft</a>
+            <a href="{{ url_for('invoicing.invoices', type=inv_type, state='posted') }}" class="btn {{ 'btn-odoo' if current_state == 'posted' else 'btn-odoo-outline' }}">Posted</a>
+            <a href="{{ url_for('invoicing.invoices', type=inv_type, state='paid') }}" class="btn {{ 'btn-odoo' if current_state == 'paid' else 'btn-odoo-outline' }}">Paid</a>
+        </div>
+        <a href="{{ url_for('invoicing.invoice_new', type=inv_type) }}" class="btn btn-sm btn-odoo"><i class="bi bi-plus-lg"></i> New</a>
+    </div>
+</div>
+<div class="o-content">
+    {% if invoices %}
+    <div class="o-list-view">
+        <table class="table mb-0">
+            <thead><tr><th>Number</th><th>Partner</th><th>Date</th><th>Status</th><th class="text-end">Total</th><th class="text-end">Due</th></tr></thead>
+            <tbody>
+            {% for inv in invoices %}
+            <tr data-href="{{ url_for('invoicing.invoice_detail', id=inv.id) }}">
+                <td><strong>{{ inv.name }}</strong></td>
+                <td>{{ inv.partner.name }}</td>
+                <td>{{ inv.date_invoice }}</td>
+                <td><span class="badge-stage badge-{{ inv.state }}">{{ inv.state|title }}</span></td>
+                <td class="text-end">{{ "{:,.2f}".format(inv.amount_total) }}</td>
+                <td class="text-end">{{ "{:,.2f}".format(inv.amount_total - inv.amount_paid) }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="o-empty">
+        <i class="bi bi-receipt"></i>
+        <p>No invoices found.</p>
+        <a href="{{ url_for('invoicing.invoice_new', type=inv_type) }}" class="btn btn-odoo"><i class="bi bi-plus-lg"></i> Create</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

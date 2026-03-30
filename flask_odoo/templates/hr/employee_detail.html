@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ employee.name }} - HR{% endblock %}
+{% block content %}
+<div class="o-control-panel">
+    <h2><i class="bi bi-person-badge"></i> {{ employee.name }}</h2>
+    <div class="o-cp-actions">
+        <a href="{{ url_for('hr.employee_edit', id=employee.id) }}" class="btn btn-sm btn-odoo"><i class="bi bi-pencil"></i> Edit</a>
+        <form method="POST" action="{{ url_for('hr.employee_archive', id=employee.id) }}" style="display:inline;"
+              onsubmit="return confirm('Archive this employee?');">
+            <button class="btn btn-sm btn-outline-danger"><i class="bi bi-archive"></i> Archive</button>
+        </form>
+        <a href="{{ url_for('hr.employees') }}" class="btn btn-sm btn-odoo-outline">Back</a>
+    </div>
+</div>
+<div class="o-content">
+    <div class="o-form">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label">Job Title</label>
+                    <div>{{ employee.job_title or '—' }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Department</label>
+                    <div>{{ employee.department.name if employee.department else '—' }}</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <div>{{ employee.email or '—' }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Phone</label>
+                    <div>{{ employee.phone or '—' }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Hire Date</label>
+                    <div>{{ employee.hire_date }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

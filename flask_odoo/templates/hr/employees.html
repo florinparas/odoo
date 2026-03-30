@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Employees - HR{% endblock %}
+{% block content %}
+<div class="o-control-panel">
+    <h2><i class="bi bi-people"></i> Employees</h2>
+    <div class="o-cp-actions">
+        <form class="d-flex gap-2" method="GET">
+            <input type="text" name="q" class="form-control form-control-sm" placeholder="Search..." value="{{ q }}" style="width:200px;">
+            <button class="btn btn-sm btn-odoo-outline" type="submit"><i class="bi bi-search"></i></button>
+        </form>
+        <a href="{{ url_for('hr.departments') }}" class="btn btn-sm btn-odoo-outline"><i class="bi bi-building"></i> Departments</a>
+        <a href="{{ url_for('hr.employee_new') }}" class="btn btn-sm btn-odoo"><i class="bi bi-plus-lg"></i> New</a>
+    </div>
+</div>
+<div class="o-content">
+    {% if employees %}
+    <div class="row g-3">
+        {% for emp in employees %}
+        <div class="col-md-4 col-lg-3">
+            <div class="o-kanban-card" onclick="window.location='{{ url_for('hr.employee_detail', id=emp.id) }}'">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="avatar" style="background:var(--odoo-purple);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;">
+                        {{ emp.name[:2].upper() }}
+                    </div>
+                    <div>
+                        <div class="card-title mb-0">{{ emp.name }}</div>
+                        <div class="card-meta">{{ emp.job_title or 'No title' }}</div>
+                        {% if emp.department %}
+                        <div class="card-meta"><i class="bi bi-building"></i> {{ emp.department.name }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="o-empty">
+        <i class="bi bi-people"></i>
+        <p>No employees found.</p>
+        <a href="{{ url_for('hr.employee_new') }}" class="btn btn-odoo"><i class="bi bi-plus-lg"></i> New Employee</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

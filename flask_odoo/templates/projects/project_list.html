@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Projects{% endblock %}
+{% block content %}
+<div class="o-control-panel">
+    <h2><i class="bi bi-kanban"></i> Projects</h2>
+    <div class="o-cp-actions">
+        <a href="{{ url_for('projects.project_new') }}" class="btn btn-sm btn-odoo"><i class="bi bi-plus-lg"></i> New</a>
+    </div>
+</div>
+<div class="o-content">
+    {% if projects %}
+    <div class="row g-3">
+        {% for p in projects %}
+        <div class="col-md-4 col-lg-3">
+            <div class="o-kanban-card" onclick="window.location='{{ url_for('projects.project_board', id=p.id) }}'"
+                 style="border-left:4px solid {{ p.color }};">
+                <div class="card-title">{{ p.name }}</div>
+                <div class="card-meta">
+                    <i class="bi bi-person"></i> {{ p.manager.full_name if p.manager else 'Unassigned' }}
+                </div>
+                <div class="card-meta mt-1">
+                    <i class="bi bi-list-task"></i> {{ p.tasks|length }} tasks
+                    <span class="badge-stage badge-{{ p.status }} ms-2">{{ p.status|title }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="o-empty">
+        <i class="bi bi-kanban"></i>
+        <p>No projects yet.</p>
+        <a href="{{ url_for('projects.project_new') }}" class="btn btn-odoo"><i class="bi bi-plus-lg"></i> New Project</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if contact else 'New' }} Contact - CRM{% endblock %}
+{% block content %}
+<div class="o-control-panel">
+    <h2><i class="bi bi-person"></i> {{ 'Edit' if contact else 'New' }} Contact</h2>
+    <div class="o-cp-actions">
+        <a href="{{ url_for('crm.contacts') }}" class="btn btn-sm btn-odoo-outline">Cancel</a>
+    </div>
+</div>
+<div class="o-content">
+    <form method="POST" class="o-form">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Name *</label>
+                <input type="text" name="name" class="form-control" value="{{ contact.name if contact else '' }}" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Type</label>
+                <select name="contact_type" class="form-select">
+                    <option value="company" {{ 'selected' if contact and contact.contact_type == 'company' }}>Company</option>
+                    <option value="individual" {{ 'selected' if contact and contact.contact_type == 'individual' }}>Individual</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" value="{{ contact.email if contact else '' }}">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Phone</label>
+                <input type="text" name="phone" class="form-control" value="{{ contact.phone if contact else '' }}">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Company</label>
+                <input type="text" name="company" class="form-control" value="{{ contact.company if contact else '' }}">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Job Title</label>
+                <input type="text" name="job_title" class="form-control" value="{{ contact.job_title if contact else '' }}">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">City</label>
+                <input type="text" name="city" class="form-control" value="{{ contact.city if contact else '' }}">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Country</label>
+                <input type="text" name="country" class="form-control" value="{{ contact.country if contact else '' }}">
+            </div>
+            <div class="col-md-6">
+                <div class="form-check mt-4">
+                    <input type="checkbox" name="is_customer" class="form-check-input" id="is_customer"
+                           {{ 'checked' if contact and contact.is_customer }}>
+                    <label class="form-check-label" for="is_customer">Customer</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="is_vendor" class="form-check-input" id="is_vendor"
+                           {{ 'checked' if contact and contact.is_vendor }}>
+                    <label class="form-check-label" for="is_vendor">Vendor</label>
+                </div>
+            </div>
+            <div class="col-12">
+                <label class="form-label">Notes</label>
+                <textarea name="notes" class="form-control" rows="3">{{ contact.notes if contact else '' }}</textarea>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-odoo"><i class="bi bi-check-lg"></i> Save</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

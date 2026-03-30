@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if user else 'New' }} User{% endblock %}
+{% block content %}
+<div class="o-control-panel">
+    <h2><i class="bi bi-person"></i> {{ 'Edit' if user else 'New' }} User</h2>
+    <div class="o-cp-actions">
+        <a href="{{ url_for('settings.users') }}" class="btn btn-sm btn-odoo-outline">Cancel</a>
+    </div>
+</div>
+<div class="o-content">
+    <form method="POST" class="o-form">
+        <div class="row g-3">
+            {% if not user %}
+            <div class="col-md-6">
+                <label class="form-label">Username *</label>
+                <input type="text" name="username" class="form-control" required>
+            </div>
+            {% endif %}
+            <div class="col-md-6">
+                <label class="form-label">Full Name *</label>
+                <input type="text" name="full_name" class="form-control" value="{{ user.full_name if user else '' }}" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Email *</label>
+                <input type="email" name="email" class="form-control" value="{{ user.email if user else '' }}" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Password {{ '(leave blank to keep current)' if user else '*' }}</label>
+                <input type="password" name="password" class="form-control" {{ '' if user else 'required' }}>
+            </div>
+            {% if current_user.role == 'admin' %}
+            <div class="col-md-6">
+                <label class="form-label">Role</label>
+                <select name="role" class="form-select">
+                    <option value="user" {{ 'selected' if user and user.role == 'user' }}>User</option>
+                    <option value="manager" {{ 'selected' if user and user.role == 'manager' }}>Manager</option>
+                    <option value="admin" {{ 'selected' if user and user.role == 'admin' }}>Admin</option>
+                </select>
+            </div>
+            {% endif %}
+            <div class="col-12">
+                <button type="submit" class="btn btn-odoo"><i class="bi bi-check-lg"></i> Save</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

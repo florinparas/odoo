@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if employee else 'New' }} Employee{% endblock %}
+{% block content %}
+<div class="o-control-panel">
+    <h2><i class="bi bi-person-badge"></i> {{ 'Edit' if employee else 'New' }} Employee</h2>
+    <div class="o-cp-actions">
+        <a href="{{ url_for('hr.employees') }}" class="btn btn-sm btn-odoo-outline">Cancel</a>
+    </div>
+</div>
+<div class="o-content">
+    <form method="POST" class="o-form">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Name *</label>
+                <input type="text" name="name" class="form-control" value="{{ employee.name if employee else '' }}" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Job Title</label>
+                <input type="text" name="job_title" class="form-control" value="{{ employee.job_title if employee else '' }}">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" value="{{ employee.email if employee else '' }}">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Phone</label>
+                <input type="text" name="phone" class="form-control" value="{{ employee.phone if employee else '' }}">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Department</label>
+                <select name="department_id" class="form-select">
+                    <option value="">— None —</option>
+                    {% for d in departments %}
+                    <option value="{{ d.id }}" {{ 'selected' if employee and employee.department_id == d.id }}>{{ d.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-odoo"><i class="bi bi-check-lg"></i> Save</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Leads - CRM{% endblock %}
+{% block content %}
+<div class="o-control-panel">
+    <h2><i class="bi bi-funnel"></i> Leads</h2>
+    <div class="o-cp-actions">
+        <a href="{{ url_for('crm.pipeline') }}" class="btn btn-sm btn-odoo-outline"><i class="bi bi-kanban"></i> Pipeline</a>
+        <a href="{{ url_for('crm.lead_new') }}" class="btn btn-sm btn-odoo"><i class="bi bi-plus-lg"></i> New</a>
+    </div>
+</div>
+<div class="o-content">
+    {% if leads %}
+    <div class="o-list-view">
+        <table class="table mb-0">
+            <thead>
+                <tr><th>Name</th><th>Contact</th><th>Stage</th><th>Revenue</th><th>Probability</th><th>Assigned To</th></tr>
+            </thead>
+            <tbody>
+            {% for lead in leads %}
+            <tr data-href="{{ url_for('crm.lead_edit', id=lead.id) }}">
+                <td><strong>{{ lead.name }}</strong></td>
+                <td>{{ lead.contact.name if lead.contact else '—' }}</td>
+                <td><span class="badge-stage badge-{{ lead.stage }}">{{ lead.stage|title }}</span></td>
+                <td>{{ "{:,.0f}".format(lead.expected_revenue) }}</td>
+                <td>{{ lead.probability }}%</td>
+                <td>{{ lead.assignee.full_name if lead.assignee else '—' }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="o-empty">
+        <i class="bi bi-funnel"></i>
+        <p>No leads yet.</p>
+        <a href="{{ url_for('crm.lead_new') }}" class="btn btn-odoo"><i class="bi bi-plus-lg"></i> New Lead</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

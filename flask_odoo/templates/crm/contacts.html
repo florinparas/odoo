@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Contacts - CRM{% endblock %}
+{% block content %}
+<div class="o-control-panel">
+    <div>
+        <h2><i class="bi bi-people"></i> Contacts</h2>
+    </div>
+    <div class="o-cp-actions">
+        <form class="d-flex gap-2" method="GET">
+            <input type="text" name="q" class="form-control form-control-sm" placeholder="Search..." value="{{ q }}" style="width:200px;">
+            <button class="btn btn-sm btn-odoo-outline" type="submit"><i class="bi bi-search"></i></button>
+        </form>
+        <a href="{{ url_for('crm.contact_new') }}" class="btn btn-sm btn-odoo"><i class="bi bi-plus-lg"></i> New</a>
+    </div>
+</div>
+<div class="o-content">
+    {% if contacts %}
+    <div class="o-list-view">
+        <table class="table mb-0">
+            <thead>
+                <tr><th>Name</th><th>Email</th><th>Phone</th><th>Company</th><th>Type</th><th>City</th></tr>
+            </thead>
+            <tbody>
+            {% for c in contacts %}
+            <tr data-href="{{ url_for('crm.contact_detail', id=c.id) }}">
+                <td><strong>{{ c.name }}</strong></td>
+                <td>{{ c.email }}</td>
+                <td>{{ c.phone }}</td>
+                <td>{{ c.company }}</td>
+                <td>
+                    {% if c.is_customer %}<span class="badge bg-success">Customer</span>{% endif %}
+                    {% if c.is_vendor %}<span class="badge bg-info">Vendor</span>{% endif %}
+                </td>
+                <td>{{ c.city }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="o-empty">
+        <i class="bi bi-people"></i>
+        <p>No contacts found. Create your first contact!</p>
+        <a href="{{ url_for('crm.contact_new') }}" class="btn btn-odoo"><i class="bi bi-plus-lg"></i> New Contact</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

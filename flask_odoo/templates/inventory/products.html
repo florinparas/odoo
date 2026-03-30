@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Products - Inventory{% endblock %}
+{% block content %}
+<div class="o-control-panel">
+    <h2><i class="bi bi-box-seam"></i> Products</h2>
+    <div class="o-cp-actions">
+        <form class="d-flex gap-2" method="GET">
+            <input type="text" name="q" class="form-control form-control-sm" placeholder="Search..." value="{{ q }}" style="width:200px;">
+            <button class="btn btn-sm btn-odoo-outline" type="submit"><i class="bi bi-search"></i></button>
+        </form>
+        <a href="{{ url_for('inventory.product_new') }}" class="btn btn-sm btn-odoo"><i class="bi bi-plus-lg"></i> New</a>
+    </div>
+</div>
+<div class="o-content">
+    {% if products %}
+    <div class="o-list-view">
+        <table class="table mb-0">
+            <thead><tr><th>Name</th><th>Ref</th><th>Category</th><th>Type</th><th class="text-end">Price</th><th class="text-end">Cost</th><th class="text-end">On Hand</th></tr></thead>
+            <tbody>
+            {% for p in products %}
+            <tr data-href="{{ url_for('inventory.product_detail', id=p.id) }}">
+                <td><strong>{{ p.name }}</strong></td>
+                <td>{{ p.internal_ref or '—' }}</td>
+                <td>{{ p.category or '—' }}</td>
+                <td>{{ p.product_type|title }}</td>
+                <td class="text-end">{{ "{:,.2f}".format(p.sale_price) }}</td>
+                <td class="text-end">{{ "{:,.2f}".format(p.cost_price) }}</td>
+                <td class="text-end">{{ p.qty_on_hand }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="o-empty">
+        <i class="bi bi-box-seam"></i>
+        <p>No products found.</p>
+        <a href="{{ url_for('inventory.product_new') }}" class="btn btn-odoo"><i class="bi bi-plus-lg"></i> New Product</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

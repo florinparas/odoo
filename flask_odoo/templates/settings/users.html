@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Users - Settings{% endblock %}
+{% block content %}
+<div class="o-control-panel">
+    <h2><i class="bi bi-people"></i> Users</h2>
+    <div class="o-cp-actions">
+        {% if current_user.role == 'admin' %}
+        <a href="{{ url_for('settings.user_new') }}" class="btn btn-sm btn-odoo"><i class="bi bi-plus-lg"></i> New User</a>
+        {% endif %}
+        <a href="{{ url_for('settings.index') }}" class="btn btn-sm btn-odoo-outline">Back</a>
+    </div>
+</div>
+<div class="o-content">
+    <div class="o-list-view">
+        <table class="table mb-0">
+            <thead><tr><th>Name</th><th>Username</th><th>Email</th><th>Role</th><th>Actions</th></tr></thead>
+            <tbody>
+            {% for u in users %}
+            <tr>
+                <td>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="avatar" style="background:{{ u.avatar_color }};width:28px;height:28px;font-size:10px;">{{ u.initials }}</div>
+                        <strong>{{ u.full_name }}</strong>
+                    </div>
+                </td>
+                <td>{{ u.username }}</td>
+                <td>{{ u.email }}</td>
+                <td><span class="badge bg-{{ 'danger' if u.role == 'admin' else ('warning' if u.role == 'manager' else 'secondary') }}">{{ u.role|title }}</span></td>
+                <td>
+                    {% if current_user.role == 'admin' or current_user.id == u.id %}
+                    <a href="{{ url_for('settings.user_edit', id=u.id) }}" class="btn btn-sm btn-odoo-outline"><i class="bi bi-pencil"></i></a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

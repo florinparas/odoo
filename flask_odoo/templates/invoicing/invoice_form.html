@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}New Invoice{% endblock %}
+{% block content %}
+<div class="o-control-panel">
+    <h2><i class="bi bi-receipt"></i> New {{ 'Invoice' if inv_type == 'out_invoice' else 'Bill' }}</h2>
+    <div class="o-cp-actions">
+        <a href="{{ url_for('invoicing.invoices') }}" class="btn btn-sm btn-odoo-outline">Cancel</a>
+    </div>
+</div>
+<div class="o-content">
+    <form method="POST" class="o-form">
+        <input type="hidden" name="invoice_type" value="{{ inv_type }}">
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <label class="form-label">Partner *</label>
+                <select name="partner_id" class="form-select" required>
+                    <option value="">— Select —</option>
+                    {% for p in partners %}
+                    <option value="{{ p.id }}" {{ 'selected' if invoice and invoice.partner_id == p.id }}>{{ p.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Notes</label>
+                <input type="text" name="notes" class="form-control" value="{{ invoice.notes if invoice else '' }}">
+            </div>
+        </div>
+
+        <h5 style="color:var(--odoo-purple);">Invoice Lines</h5>
+        <div id="order-lines">
+            <div class="order-line row g-2 mb-2 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label">Description</label>
+                    <input type="text" name="line_description_0" class="form-control" required>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Qty</label>
+                    <input type="number" name="line_qty_0" class="form-control" step="0.01" value="1">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Price</label>
+                    <input type="number" name="line_price_0" class="form-control" step="0.01" value="0">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Tax %</label>
+                    <input type="number" name="line_tax_0" class="form-control" step="0.01" value="0">
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-sm btn-outline-danger remove-line"><i class="bi bi-trash"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <template id="line-template">
+            <div class="col-md-4">
+                <input type="text" name="line_description___IDX__" class="form-control" placeholder="Description">
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="line_qty___IDX__" class="form-control" step="0.01" value="1">
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="line_price___IDX__" class="form-control" step="0.01" value="0">
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="line_tax___IDX__" class="form-control" step="0.01" value="0">
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-sm btn-outline-danger remove-line"><i class="bi bi-trash"></i></button>
+            </div>
+        </template>
+
+        <button type="button" id="add-line" class="btn btn-sm btn-odoo-outline mb-3"><i class="bi bi-plus"></i> Add Line</button>
+        <div>
+            <button type="submit" class="btn btn-odoo"><i class="bi bi-check-lg"></i> Save</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}{{ project.name }} - Board{% endblock %}
+{% block content %}
+<div class="o-control-panel">
+    <h2><i class="bi bi-kanban"></i> {{ project.name }}</h2>
+    <div class="o-cp-actions">
+        <a href="{{ url_for('projects.project_edit', id=project.id) }}" class="btn btn-sm btn-odoo-outline"><i class="bi bi-pencil"></i> Edit</a>
+        <a href="{{ url_for('projects.task_new', pid=project.id) }}" class="btn btn-sm btn-odoo"><i class="bi bi-plus-lg"></i> New Task</a>
+        <a href="{{ url_for('projects.project_list') }}" class="btn btn-sm btn-odoo-outline">Back</a>
+    </div>
+</div>
+<div class="o-content">
+    <div class="o-kanban">
+        {% for code, label in stages %}
+        <div class="o-kanban-column">
+            <div class="column-header">
+                {{ label }}
+                <span class="badge">{{ tasks_by_stage[code].tasks|length }}</span>
+            </div>
+            {% for task in tasks_by_stage[code].tasks %}
+            <div class="o-kanban-card">
+                <div class="card-title">
+                    <a href="{{ url_for('projects.task_edit', pid=project.id, tid=task.id) }}" style="color:#333;text-decoration:none;">
+                        {{ task.name }}
+                    </a>
+                </div>
+                {% if task.assignee %}
+                <div class="card-meta"><i class="bi bi-person"></i> {{ task.assignee.full_name }}</div>
+                {% endif %}
+                <div class="card-meta">
+                    {% for i in range(task.priority) %}<i class="bi bi-star-fill priority-stars"></i>{% endfor %}
+                    {% if task.hours_planned %}<i class="bi bi-clock ms-1"></i> {{ task.hours_spent }}/{{ task.hours_planned }}h{% endif %}
+                </div>
+                <div class="mt-2 d-flex gap-1">
+                    {% set next_map = {'todo': 'in_progress', 'in_progress': 'review', 'review': 'done'} %}
+                    {% if code in next_map %}
+                    <form method="POST" action="{{ url_for('projects.task_stage', pid=project.id, tid=task.id) }}">
+                        <input type="hidden" name="stage" value="{{ next_map[code] }}">
+                        <button class="btn btn-sm btn-odoo-outline" style="font-size:11px;"><i class="bi bi-arrow-right"></i></button>
+                    </form>
+                    {% endif %}
+                    <form method="POST" action="{{ url_for('projects.task_delete', pid=project.id, tid=task.id) }}"
+                          onsubmit="return confirm('Delete task?');">
+                        <button class="btn btn-sm btn-outline-danger" style="font-size:11px;"><i class="bi bi-trash"></i></button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

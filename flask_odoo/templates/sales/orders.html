@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Sales Orders{% endblock %}
+{% block content %}
+<div class="o-control-panel">
+    <h2><i class="bi bi-cart3"></i> Sales Orders</h2>
+    <div class="o-cp-actions">
+        <div class="btn-group btn-group-sm">
+            <a href="{{ url_for('sales.orders') }}" class="btn {{ 'btn-odoo' if not current_state else 'btn-odoo-outline' }}">All</a>
+            <a href="{{ url_for('sales.orders', state='draft') }}" class="btn {{ 'btn-odoo' if current_state == 'draft' else 'btn-odoo-outline' }}">Quotations</a>
+            <a href="{{ url_for('sales.orders', state='sale') }}" class="btn {{ 'btn-odoo' if current_state == 'sale' else 'btn-odoo-outline' }}">Confirmed</a>
+        </div>
+        <a href="{{ url_for('sales.order_new') }}" class="btn btn-sm btn-odoo"><i class="bi bi-plus-lg"></i> New</a>
+    </div>
+</div>
+<div class="o-content">
+    {% if orders %}
+    <div class="o-list-view">
+        <table class="table mb-0">
+            <thead><tr><th>Number</th><th>Customer</th><th>Date</th><th>Salesperson</th><th>Status</th><th class="text-end">Total</th></tr></thead>
+            <tbody>
+            {% for o in orders %}
+            <tr data-href="{{ url_for('sales.order_detail', id=o.id) }}">
+                <td><strong>{{ o.name }}</strong></td>
+                <td>{{ o.customer.name }}</td>
+                <td>{{ o.date_order }}</td>
+                <td>{{ o.salesperson.full_name if o.salesperson else '—' }}</td>
+                <td><span class="badge-stage badge-{{ o.state }}">{{ o.state|title }}</span></td>
+                <td class="text-end"><strong>{{ "{:,.2f}".format(o.amount_total) }}</strong></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="o-empty">
+        <i class="bi bi-cart3"></i>
+        <p>No sales orders yet.</p>
+        <a href="{{ url_for('sales.order_new') }}" class="btn btn-odoo"><i class="bi bi-plus-lg"></i> New Quotation</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

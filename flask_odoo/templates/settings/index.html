@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Settings{% endblock %}
+{% block content %}
+<div class="o-control-panel">
+    <h2><i class="bi bi-gear"></i> Settings</h2>
+</div>
+<div class="o-content">
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="o-kanban-card" onclick="window.location='{{ url_for('settings.users') }}'">
+                <div class="text-center">
+                    <i class="bi bi-people-fill" style="font-size:32px;color:var(--odoo-purple);"></i>
+                    <div class="card-title mt-2">Users</div>
+                    <div class="card-meta">Manage user accounts and permissions</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="o-kanban-card" onclick="window.location='{{ url_for('settings.profile') }}'">
+                <div class="text-center">
+                    <i class="bi bi-person-circle" style="font-size:32px;color:var(--odoo-purple);"></i>
+                    <div class="card-title mt-2">My Profile</div>
+                    <div class="card-meta">Update your personal information</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="o-kanban-card">
+                <div class="text-center">
+                    <i class="bi bi-info-circle" style="font-size:32px;color:var(--odoo-purple);"></i>
+                    <div class="card-title mt-2">About</div>
+                    <div class="card-meta">Flask Odoo v1.0 — Flask-based ERP clone</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

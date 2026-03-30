@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Pipeline - CRM{% endblock %}
+{% block content %}
+<div class="o-control-panel">
+    <div>
+        <h2><i class="bi bi-funnel"></i> Pipeline</h2>
+    </div>
+    <div class="o-cp-actions">
+        <a href="{{ url_for('crm.leads') }}" class="btn btn-sm btn-odoo-outline"><i class="bi bi-list"></i> List</a>
+        <a href="{{ url_for('crm.contacts') }}" class="btn btn-sm btn-odoo-outline"><i class="bi bi-people"></i> Contacts</a>
+        <a href="{{ url_for('crm.lead_new') }}" class="btn btn-sm btn-odoo"><i class="bi bi-plus-lg"></i> New</a>
+    </div>
+</div>
+<div class="o-content">
+    <div class="o-kanban">
+        {% for code, label in stages %}
+        {% if code != 'lost' %}
+        <div class="o-kanban-column">
+            <div class="column-header">
+                {{ label }}
+                <span class="badge">{{ leads_by_stage[code].leads|length }}</span>
+            </div>
+            {% for lead in leads_by_stage[code].leads %}
+            <div class="o-kanban-card" onclick="window.location='{{ url_for('crm.lead_edit', id=lead.id) }}'">
+                <div class="card-title">{{ lead.name }}</div>
+                {% if lead.contact %}
+                <div class="card-meta"><i class="bi bi-person"></i> {{ lead.contact.name }}</div>
+                {% endif %}
+                {% if lead.expected_revenue %}
+                <div class="card-amount mt-1">{{ "{:,.0f}".format(lead.expected_revenue) }}</div>
+                {% endif %}
+                <div class="card-meta mt-1">
+                    {% for i in range(lead.priority) %}<i class="bi bi-star-fill priority-stars"></i>{% endfor %}
+                    {% if lead.probability %}{{ lead.probability }}%{% endif %}
+                </div>
+                {% if code != 'won' %}
+                <div class="mt-2">
+                    {% set next_stages = {'new': 'qualified', 'qualified': 'proposition', 'proposition': 'won'} %}
+                    {% if code in next_stages %}
+                    <form method="POST" action="{{ url_for('crm.lead_stage', id=lead.id) }}" style="display:inline;">
+                        <input type="hidden" name="stage" value="{{ next_stages[code] }}">
+                        <button class="btn btn-sm btn-odoo-outline" style="font-size:11px;">
+                            <i class="bi bi-arrow-right"></i> {{ next_stages[code]|title }}
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

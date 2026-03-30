@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Flask Odoo{% endblock %}
+{% block content %}
+<div class="o-control-panel">
+    <h2><i class="bi bi-speedometer2"></i> Dashboard</h2>
+</div>
+<div class="o-content">
+    <!-- KPI Row -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3 col-lg">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+                <div class="stat-value">{{ stats.contacts }}</div>
+                <div class="stat-label">Contacts</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-funnel-fill"></i></div>
+                <div class="stat-value">{{ stats.leads }}</div>
+                <div class="stat-label">Open Leads</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-cart-check-fill"></i></div>
+                <div class="stat-value">{{ stats.orders }}</div>
+                <div class="stat-label">Confirmed Orders</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-currency-dollar"></i></div>
+                <div class="stat-value">{{ "{:,.0f}".format(stats.revenue) }}</div>
+                <div class="stat-label">Revenue</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-receipt"></i></div>
+                <div class="stat-value">{{ stats.invoices_open }}</div>
+                <div class="stat-label">Open Invoices</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3 col-lg">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-cash-stack"></i></div>
+                <div class="stat-value">{{ "{:,.0f}".format(stats.invoices_amount) }}</div>
+                <div class="stat-label">Amount Due</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-box-seam-fill"></i></div>
+                <div class="stat-value">{{ stats.products }}</div>
+                <div class="stat-label">Products</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-kanban-fill"></i></div>
+                <div class="stat-value">{{ stats.projects }}</div>
+                <div class="stat-label">Active Projects</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-check2-square"></i></div>
+                <div class="stat-value">{{ stats.tasks_todo }}</div>
+                <div class="stat-label">Open Tasks</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-person-badge-fill"></i></div>
+                <div class="stat-value">{{ stats.employees }}</div>
+                <div class="stat-label">Employees</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="o-card">
+                <h5 style="color:var(--odoo-purple);margin-bottom:16px;">
+                    <i class="bi bi-funnel"></i> Recent Leads
+                </h5>
+                {% if recent_leads %}
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>Name</th><th>Stage</th><th>Revenue</th></tr></thead>
+                    <tbody>
+                    {% for lead in recent_leads %}
+                    <tr>
+                        <td><a href="{{ url_for('crm.lead_edit', id=lead.id) }}">{{ lead.name }}</a></td>
+                        <td><span class="badge-stage badge-{{ lead.stage }}">{{ lead.stage|title }}</span></td>
+                        <td>{{ "{:,.0f}".format(lead.expected_revenue) }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted mb-0">No leads yet. <a href="{{ url_for('crm.lead_new') }}">Create one</a></p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="o-card">
+                <h5 style="color:var(--odoo-purple);margin-bottom:16px;">
+                    <i class="bi bi-cart3"></i> Recent Orders
+                </h5>
+                {% if recent_orders %}
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>Order</th><th>Customer</th><th>Status</th><th>Total</th></tr></thead>
+                    <tbody>
+                    {% for order in recent_orders %}
+                    <tr>
+                        <td><a href="{{ url_for('sales.order_detail', id=order.id) }}">{{ order.name }}</a></td>
+                        <td>{{ order.customer.name }}</td>
+                        <td><span class="badge-stage badge-{{ order.state }}">{{ order.state|title }}</span></td>
+                        <td>{{ "{:,.2f}".format(order.amount_total) }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted mb-0">No orders yet. <a href="{{ url_for('sales.order_new') }}">Create one</a></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

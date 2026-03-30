@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if product else 'New' }} Product{% endblock %}
+{% block content %}
+<div class="o-control-panel">
+    <h2><i class="bi bi-box-seam"></i> {{ 'Edit' if product else 'New' }} Product</h2>
+    <div class="o-cp-actions">
+        <a href="{{ url_for('inventory.products') }}" class="btn btn-sm btn-odoo-outline">Cancel</a>
+    </div>
+</div>
+<div class="o-content">
+    <form method="POST" class="o-form">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Product Name *</label>
+                <input type="text" name="name" class="form-control" value="{{ product.name if product else '' }}" required>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Internal Reference</label>
+                <input type="text" name="internal_ref" class="form-control" value="{{ product.internal_ref if product else '' }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Barcode</label>
+                <input type="text" name="barcode" class="form-control" value="{{ product.barcode if product else '' }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Sale Price</label>
+                <input type="number" name="sale_price" class="form-control" step="0.01" value="{{ product.sale_price if product else 0 }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Cost Price</label>
+                <input type="number" name="cost_price" class="form-control" step="0.01" value="{{ product.cost_price if product else 0 }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Category</label>
+                <input type="text" name="category" class="form-control" value="{{ product.category if product else '' }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Type</label>
+                <select name="product_type" class="form-select">
+                    <option value="storable" {{ 'selected' if product and product.product_type == 'storable' }}>Storable</option>
+                    <option value="consumable" {{ 'selected' if product and product.product_type == 'consumable' }}>Consumable</option>
+                    <option value="service" {{ 'selected' if product and product.product_type == 'service' }}>Service</option>
+                </select>
+            </div>
+            {% if not product %}
+            <div class="col-md-3">
+                <label class="form-label">Initial Stock</label>
+                <input type="number" name="qty_on_hand" class="form-control" step="0.01" value="0">
+            </div>
+            {% endif %}
+            <div class="col-12">
+                <label class="form-label">Description</label>
+                <textarea name="description" class="form-control" rows="2">{{ product.description if product else '' }}</textarea>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-odoo"><i class="bi bi-check-lg"></i> Save</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

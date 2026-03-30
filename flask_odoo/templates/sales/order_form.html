@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if order else 'New' }} Quotation{% endblock %}
+{% block content %}
+<div class="o-control-panel">
+    <h2><i class="bi bi-cart3"></i> {{ order.name if order else 'New Quotation' }}</h2>
+    <div class="o-cp-actions">
+        <a href="{{ url_for('sales.orders') }}" class="btn btn-sm btn-odoo-outline">Cancel</a>
+    </div>
+</div>
+<div class="o-content">
+    <form method="POST" class="o-form">
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <label class="form-label">Customer *</label>
+                <select name="customer_id" class="form-select" required>
+                    <option value="">— Select Customer —</option>
+                    {% for c in customers %}
+                    <option value="{{ c.id }}" {{ 'selected' if order and order.customer_id == c.id }}>{{ c.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Notes</label>
+                <input type="text" name="notes" class="form-control" value="{{ order.notes if order else '' }}">
+            </div>
+        </div>
+
+        <h5 style="color:var(--odoo-purple);">Order Lines</h5>
+        <div id="order-lines">
+            {% if order and order.lines %}
+            {% for line in order.lines %}
+            <div class="order-line row g-2 mb-2 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label">Product</label>
+                    <select name="line_product_{{ loop.index0 }}" class="form-select product-select">
+                        {% for p in products %}
+                        <option value="{{ p.id }}" data-price="{{ p.sale_price }}"
+                                {{ 'selected' if p.id == line.product_id }}>{{ p.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Qty</label>
+                    <input type="number" name="line_qty_{{ loop.index0 }}" class="form-control" step="0.01" value="{{ line.quantity }}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Price</label>
+                    <input type="number" name="line_price_{{ loop.index0 }}" class="form-control line-price" step="0.01" value="{{ line.unit_price }}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Tax %</label>
+                    <input type="number" name="line_tax_{{ loop.index0 }}" class="form-control" step="0.01" value="{{ line.tax_percent }}">
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-sm btn-outline-danger remove-line"><i class="bi bi-trash"></i></button>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="order-line row g-2 mb-2 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label">Product</label>
+                    <select name="line_product_0" class="form-select product-select">
+                        <option value="">— Select —</option>
+                        {% for p in products %}
+                        <option value="{{ p.id }}" data-price="{{ p.sale_price }}">{{ p.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Qty</label>
+                    <input type="number" name="line_qty_0" class="form-control" step="0.01" value="1">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Price</label>
+                    <input type="number" name="line_price_0" class="form-control line-price" step="0.01" value="0">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Tax %</label>
+                    <input type="number" name="line_tax_0" class="form-control" step="0.01" value="0">
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-sm btn-outline-danger remove-line"><i class="bi bi-trash"></i></button>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <button type="button" id="add-line" class="btn btn-sm btn-odoo-outline mb-3"><i class="bi bi-plus"></i> Add Line</button>
+
+        <template id="line-template">
+            <div class="col-md-4">
+                <select name="line_product___IDX__" class="form-select product-select">
+                    <option value="">— Select —</option>
+                    {% for p in products %}
+                    <option value="{{ p.id }}" data-price="{{ p.sale_price }}">{{ p.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="line_qty___IDX__" class="form-control" step="0.01" value="1">
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="line_price___IDX__" class="form-control line-price" step="0.01" value="0">
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="line_tax___IDX__" class="form-control" step="0.01" value="0">
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-sm btn-outline-danger remove-line"><i class="bi bi-trash"></i></button>
+            </div>
+        </template>
+
+        <div>
+            <button type="submit" class="btn btn-odoo"><i class="bi bi-check-lg"></i> Save</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

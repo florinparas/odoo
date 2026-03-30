@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if project else 'New' }} Project{% endblock %}
+{% block content %}
+<div class="o-control-panel">
+    <h2><i class="bi bi-kanban"></i> {{ 'Edit' if project else 'New' }} Project</h2>
+    <div class="o-cp-actions">
+        <a href="{{ url_for('projects.project_list') }}" class="btn btn-sm btn-odoo-outline">Cancel</a>
+    </div>
+</div>
+<div class="o-content">
+    <form method="POST" class="o-form">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Project Name *</label>
+                <input type="text" name="name" class="form-control" value="{{ project.name if project else '' }}" required>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Manager</label>
+                <select name="manager_id" class="form-select">
+                    {% for u in users %}
+                    <option value="{{ u.id }}" {{ 'selected' if project and project.manager_id == u.id }}>{{ u.full_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Color</label>
+                <input type="color" name="color" class="form-control form-control-color" value="{{ project.color if project else '#714B67' }}">
+            </div>
+            {% if project %}
+            <div class="col-md-3">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select">
+                    <option value="active" {{ 'selected' if project.status == 'active' }}>Active</option>
+                    <option value="on_hold" {{ 'selected' if project.status == 'on_hold' }}>On Hold</option>
+                    <option value="done" {{ 'selected' if project.status == 'done' }}>Done</option>
+                </select>
+            </div>
+            {% endif %}
+            <div class="col-12">
+                <label class="form-label">Description</label>
+                <textarea name="description" class="form-control" rows="3">{{ project.description if project else '' }}</textarea>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-odoo"><i class="bi bi-check-lg"></i> Save</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}{{ contact.name }} - CRM{% endblock %}
+{% block content %}
+<div class="o-control-panel">
+    <h2><i class="bi bi-person"></i> {{ contact.name }}</h2>
+    <div class="o-cp-actions">
+        <a href="{{ url_for('crm.contact_edit', id=contact.id) }}" class="btn btn-sm btn-odoo"><i class="bi bi-pencil"></i> Edit</a>
+        <form method="POST" action="{{ url_for('crm.contact_delete', id=contact.id) }}" style="display:inline;"
+              onsubmit="return confirm('Delete this contact?');">
+            <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+        </form>
+        <a href="{{ url_for('crm.contacts') }}" class="btn btn-sm btn-odoo-outline">Back</a>
+    </div>
+</div>
+<div class="o-content">
+    <div class="o-form">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label">Type</label>
+                    <div>
+                        <span class="badge bg-secondary">{{ contact.contact_type|title }}</span>
+                        {% if contact.is_customer %}<span class="badge bg-success">Customer</span>{% endif %}
+                        {% if contact.is_vendor %}<span class="badge bg-info">Vendor</span>{% endif %}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <div>{{ contact.email or '—' }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Phone</label>
+                    <div>{{ contact.phone or '—' }}</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label">Company</label>
+                    <div>{{ contact.company or '—' }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Job Title</label>
+                    <div>{{ contact.job_title or '—' }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Location</label>
+                    <div>{{ contact.city or '' }} {{ contact.country or '' }}</div>
+                </div>
+            </div>
+            {% if contact.notes %}
+            <div class="col-12">
+                <label class="form-label">Notes</label>
+                <div>{{ contact.notes }}</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
